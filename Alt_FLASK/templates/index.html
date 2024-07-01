@@ -1,4 +1,4 @@
-on<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,24 +6,22 @@ on<!DOCTYPE html>
     <title>Image Classification</title>
     <!-- Include Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <style>
         body {
             padding-top: 50px;
-            background-image: url('file:///C:/Users/AKHILA/OneDrive/Pictures/maxresdefault.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
         }
-        .container {
-            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        .prediction {
+            font-size: 1.5em;
+            margin-top: 20px;
         }
-        .custom-select {
-            display: inline-block;
-            width: auto;
-            vertical-align: middle;
+        .prediction span {
+            font-weight: bold;
+        }
+        #canvas {
+            border: 1px solid black;
+            background-color: black;
         }
     </style>
 </head>
@@ -31,8 +29,8 @@ on<!DOCTYPE html>
     <div class="container">
         <h1 class="text-center">Image Classification</h1>
         <div class="text-center mb-4">
-            <label for="option-select">Choose an option:</label>
-            <select id="option-select" class="custom-select w-50">
+            <label>Choose an option:</label>
+            <select id="option-select">
                 <option value="upload">Upload an Image</option>
                 <option value="draw">Draw a Digit</option>
             </select>
