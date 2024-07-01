@@ -73,9 +73,9 @@
 
         <!-- Predictions section -->
         <div class="prediction text-center">
-            <p>MLP Model Prediction: <span id="mlp_prediction"></span></p>
-            <p>LeNet-5 Model Prediction: <span id="lenet_prediction"></span></p>
-            <p>CNN Model Prediction: <span id="cnn_prediction"></span></p>
+            <p id="mlp_prediction_text" style="display: none;">MLP Model Prediction: <span id="mlp_prediction"></span></p>
+            <p id="lenet_prediction_text" style="display: none;">LeNet-5 Model Prediction: <span id="lenet_prediction"></span></p>
+            <p id="cnn_prediction_text" style="display: none;">CNN Model Prediction: <span id="cnn_prediction"></span></p>
         </div>
     </div>
 
@@ -91,6 +91,24 @@
                 } else if (option === 'draw') {
                     $('#upload-section').hide();
                     $('#draw-section').show();
+                }
+            });
+
+            // Handle model selection to show only relevant prediction
+            $('#model-select').on('change', function () {
+                var model = $(this).val();
+                if (model === 'mlp') {
+                    $('#mlp_prediction_text').show();
+                    $('#lenet_prediction_text').hide();
+                    $('#cnn_prediction_text').hide();
+                } else if (model === 'lenet') {
+                    $('#mlp_prediction_text').hide();
+                    $('#lenet_prediction_text').show();
+                    $('#cnn_prediction_text').hide();
+                } else if (model === 'cnn') {
+                    $('#mlp_prediction_text').hide();
+                    $('#lenet_prediction_text').hide();
+                    $('#cnn_prediction_text').show();
                 }
             });
 
@@ -181,6 +199,9 @@
             $('#option-select').val('upload');
             $('#upload-section').show();
             $('#draw-section').hide();
+
+            // Trigger initial model selection change to hide predictions
+            $('#model-select').trigger('change');
         });
     </script>
     <!-- Include Bootstrap JS and Popper.js -->
