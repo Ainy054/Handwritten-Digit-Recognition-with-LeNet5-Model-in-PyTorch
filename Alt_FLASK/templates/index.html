@@ -3,188 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Classification</title>
-    <!-- Include Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Include jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <style>
-        body {
-            padding-top: 50px;
-        }
-        .prediction {
-            font-size: 1.5em;
-            margin-top: 20px;
-        }
-        .prediction span {
-            font-weight: bold;
-        }
-        #canvas {
-            border: 1px solid black;
-            background-color: black;
-        }
-    </style>
+    <title>Group-V | Handwritten Digit Recognition</title>
+    <meta name="description" content="Handwritten Digit Recognition using multiple models trained on the MNIST dataset.">
+    <!-- Link to Tailwind CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Link to custom CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
-    <div class="container">
-        <h1 class="text-center">Image Classification</h1>
-        <div class="text-center mb-4">
-            <label>Choose an option:</label>
-            <select id="option-select">
-                <option value="upload">Upload an Image</option>
-                <option value="draw">Draw a Digit</option>
-            </select>
+<body class="bg-gray-900 font-sans">
+    <!-- Header section -->
+    <header class="bg-yellow-600 text-white py-8 sm:py-12">
+        <div class="container mx-auto px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-2xl sm:text-4xl font-bold leading-tight">Handwritten Digit Recognition</h1>
+                <p class="mt-2 sm:text-lg">Using Various Models</p>
+                <p class="mt-2 text-base sm:text-lg">Trained on MNIST Dataset</p>
+            </div>
         </div>
+    </header>
 
-        <!-- Form for image upload -->
-        <div id="upload-section" style="display: none;">
-            <form id="upload-form" enctype="multipart/form-data" class="text-center mb-4">
-                <div class="form-group">
-                    <input type="file" id="file" name="file" accept="image/*" class="form-control-file">
+    <!-- Main content section -->
+    <main class="py-8">
+        <div class="container mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Left section: Canvas and controls -->
+                <div class="flex flex-col justify-center items-center bg-white rounded-lg shadow-md p-6">
+                    <canvas id="sketchpad" class="border border-gray-300 mb-4" height="200" width="200" aria-label="Canvas for drawing digits"></canvas>
+                    <button type="button" class="bg-gray-800 text-white w-full py-2 px-4 rounded-md shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600" id="clear_button" aria-label="Clear Canvas">Clear</button>
+                    <div id="select_it" class="mt-4">
+                        <label for="model-select" class="mr-2">Select Model:</label>
+                        <select id="model-select" class="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-600">
+                            <option value="lenet">LeNet-5</option>
+                            <option value="mlp">MLP</option>
+                            <option value="logistic">Logistic Regression</option>
+                        </select>
+                        <button type="button" class="bg-gray-800 text-white ml-2 py-2 px-4 rounded-md shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600" id="predict_button" aria-label="Predict">Predict</button>
+                        <!-- <div id="prediction-result" class="text-black text-2xl font-bold mt-4"></div> -->
+                       
+                    </div>
+                    <div id="prediction-result" class="text-black text-2xl font-bold mt-4"></div>
+                    <div class="flex-grow"></div>
+                    <button type="button" class="bg-gray-800 text-white ml-2 py-2 px-4 rounded-md shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 " id="predict_buttons" aria-label="Predicts">Predict All</button>
+                    <div id="prediction-results" class="text-black text-2xl font-bold mt-4"></div>
                 </div>
-                <button type="submit" class="btn btn-primary">Upload and Predict</button>
-            </form>
-
-            <!-- Display the uploaded image -->
-            <div class="text-center mb-4">
-                <img id="uploaded-image" src="#" alt="Uploaded Image" style="display:none; max-width: 100%; height: auto;"/>
+                <!-- Right section: Bar chart for displaying prediction results -->
+                <div class="flex flex-col justify-center items-center bg-white rounded-lg shadow-md p-6">
+                    <canvas id="barChart" width="400" height="400" aria-label="Bar chart displaying prediction results"></canvas>
+                </div>
             </div>
         </div>
+    </main>
 
-        <!-- Canvas for drawing -->
-        <div id="draw-section" style="display: none;">
-            <h2 class="text-center">Draw a Digit</h2>
-            <div class="text-center mb-4">
-                <canvas id="canvas" width="280" height="280"></canvas><br>
-                <button id="clear-canvas" class="btn btn-secondary mt-2">Clear</button>
-                <button id="submit-canvas" class="btn btn-primary mt-2">Predict</button>
-            </div>
+    <!-- Footer section -->
+    <footer class="bg-yellow-700 text-white py-4">
+        <div class="container mx-auto px-6 lg:px-8 text-center">
+            <p>&copy; 2024 Group - V - Infosys Springboard Internship. All rights reserved.</p>
         </div>
+    </footer>
 
-        <!-- Button to scroll to predictions -->
-        <div class="text-center mb-4">
-            <button id="scroll-down" class="btn btn-success">See Predictions</button>
-        </div>
-
-        <!-- Predictions section -->
-        <div id="predictions" class="prediction text-center">
-            <p>MLP Model Prediction: <span id="mlp_prediction"></span></p>
-            <p>LeNet-5 Model Prediction: <span id="lenet_prediction"></span></p>
-            <p>CNN Model Prediction: <span id="cnn_prediction"></span></p>
-        </div>
-    </div>
-
-    <!-- jQuery script to handle form submission and display predictions -->
-    <script>
-        $(document).ready(function () {
-            // Handle option selection
-            $('#option-select').on('change', function () {
-                var option = $(this).val();
-                if (option === 'upload') {
-                    $('#upload-section').show();
-                    $('#draw-section').hide();
-                } else if (option === 'draw') {
-                    $('#upload-section').hide();
-                    $('#draw-section').show();
-                }
-            });
-
-            // Handle image upload form submission
-            $('#upload-form').on('submit', function (event) {
-                event.preventDefault();
-                var formData = new FormData(this);
-                var file = $('#file')[0].files[0];
-                if (file) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        $('#uploaded-image').attr('src', e.target.result);
-                        $('#uploaded-image').show();
-                    }
-                    reader.readAsDataURL(file);
-                }
-                $.ajax({
-                    url: '/predict',
-                    type: 'POST',
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function (response) {
-                        $('#mlp_prediction').text(response.mlp_prediction);
-                        $('#lenet_prediction').text(response.lenet_prediction);
-                        $('#cnn_prediction').text(response.cnn_prediction);
-                        $('#scroll-down').show();
-                    }
-                });
-            });
-
-            // Set up canvas for drawing
-            var canvas = document.getElementById('canvas');
-            var ctx = canvas.getContext('2d');
-            var drawing = false;
-
-            $('#canvas').mousedown(function () {
-                drawing = true;
-            }).mouseup(function () {
-                drawing = false;
-                ctx.beginPath();
-            }).mousemove(function (event) {
-                if (drawing) {
-                    var rect = canvas.getBoundingClientRect();
-                    var x = event.clientX - rect.left;
-                    var y = event.clientY - rect.top;
-                    ctx.lineWidth = 10;
-                    ctx.lineCap = 'round';
-                    ctx.strokeStyle = 'white';  // Set the drawing color to white
-                    ctx.lineTo(x, y);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(x, y);
-                }
-            });
-
-            // Clear canvas
-            $('#clear-canvas').click(function () {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'black';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            });
-
-            // Handle canvas submission
-            $('#submit-canvas').click(function () {
-                var dataURL = canvas.toDataURL();
-                $.ajax({
-                    url: '/predict',
-                    type: 'POST',
-                    data: {
-                        image: dataURL
-                    },
-                    success: function (response) {
-                        $('#mlp_prediction').text(response.mlp_prediction);
-                        $('#lenet_prediction').text(response.lenet_prediction);
-                        $('#cnn_prediction').text(response.cnn_prediction);
-                        $('#scroll-down').show();
-                    }
-                });
-            });
-
-            // Initialize the canvas background to black
-            ctx.fillStyle = 'black';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Set the initial option to 'upload'
-            $('#option-select').val('upload');
-            $('#upload-section').show();
-            $('#draw-section').hide();
-
-            // Scroll down to predictions section
-            $('#scroll-down').click(function () {
-                $('html, body').animate({
-                    scrollTop: $("#predictions").offset().top
-                }, 1000);
-            });
-        });
-    </script>
-    <!-- Include Bootstrap JS and Popper.js -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <!-- Link to Chart.js library for creating charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Link to custom JavaScript file -->
+    <script src="{{ url_for('static', filename='scripts.js') }}" defer></script>
 </body>
 </html>
