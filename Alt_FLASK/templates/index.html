@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+on<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,22 +6,24 @@
     <title>Image Classification</title>
     <!-- Include Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Include jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <style>
         body {
             padding-top: 50px;
+            background-image: url('file:///C:/Users/AKHILA/OneDrive/Pictures/maxresdefault.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
-        .prediction {
-            font-size: 1.5em;
-            margin-top: 20px;
+        .container {
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .prediction span {
-            font-weight: bold;
-        }
-        #canvas {
-            border: 1px solid black;
-            background-color: black;
+        .custom-select {
+            display: inline-block;
+            width: auto;
+            vertical-align: middle;
         }
     </style>
 </head>
@@ -29,8 +31,8 @@
     <div class="container">
         <h1 class="text-center">Image Classification</h1>
         <div class="text-center mb-4">
-            <label>Choose an option:</label>
-            <select id="option-select">
+            <label for="option-select">Choose an option:</label>
+            <select id="option-select" class="custom-select w-50">
                 <option value="upload">Upload an Image</option>
                 <option value="draw">Draw a Digit</option>
             </select>
@@ -61,13 +63,8 @@
             </div>
         </div>
 
-        <!-- Button to scroll to predictions -->
-        <div id="scroll-button-section" class="text-center mb-4" style="display: none;">
-            <button id="scroll-down" class="btn btn-success">See Predictions</button>
-        </div>
-
         <!-- Predictions section -->
-        <div id="predictions" class="prediction text-center">
+        <div class="prediction text-center">
             <p>MLP Model Prediction: <span id="mlp_prediction"></span></p>
             <p>LeNet-5 Model Prediction: <span id="lenet_prediction"></span></p>
             <p>CNN Model Prediction: <span id="cnn_prediction"></span></p>
@@ -112,7 +109,6 @@
                         $('#mlp_prediction').text(response.mlp_prediction);
                         $('#lenet_prediction').text(response.lenet_prediction);
                         $('#cnn_prediction').text(response.cnn_prediction);
-                        $('#scroll-button-section').show();
                     }
                 });
             });
@@ -129,7 +125,7 @@
                 ctx.beginPath();
             }).mousemove(function (event) {
                 if (drawing) {
-                    var rect = canvas.getBoundingClientRect();
+                    var rect =canvas.getBoundingClientRect();
                     var x = event.clientX - rect.left;
                     var y = event.clientY - rect.top;
                     ctx.lineWidth = 10;
@@ -162,7 +158,6 @@
                         $('#mlp_prediction').text(response.mlp_prediction);
                         $('#lenet_prediction').text(response.lenet_prediction);
                         $('#cnn_prediction').text(response.cnn_prediction);
-                        $('#scroll-button-section').show();
                     }
                 });
             });
@@ -175,16 +170,12 @@
             $('#option-select').val('upload');
             $('#upload-section').show();
             $('#draw-section').hide();
-
-            // Scroll down to predictions section
-            $('#scroll-down').click(function () {
-                $('html, body').animate({
-                    scrollTop: $("#predictions").offset().top
-                }, 1000);
-            });
         });
     </script>
     <!-- Include Bootstrap JS and Popper.js -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+        
+
+            
