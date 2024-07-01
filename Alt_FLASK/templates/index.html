@@ -94,21 +94,18 @@
                 }
             });
 
-            // Handle model selection to show only relevant prediction
+            // Handle model selection to show only MLP prediction
             $('#model-select').on('change', function () {
                 var model = $(this).val();
                 if (model === 'mlp') {
                     $('#mlp_prediction_text').show();
                     $('#lenet_prediction_text').hide();
                     $('#cnn_prediction_text').hide();
-                } else if (model === 'lenet') {
-                    $('#mlp_prediction_text').hide();
-                    $('#lenet_prediction_text').show();
-                    $('#cnn_prediction_text').hide();
-                } else if (model === 'cnn') {
+                } else {
+                    // Hide all predictions if no model is selected
                     $('#mlp_prediction_text').hide();
                     $('#lenet_prediction_text').hide();
-                    $('#cnn_prediction_text').show();
+                    $('#cnn_prediction_text').hide();
                 }
             });
 
