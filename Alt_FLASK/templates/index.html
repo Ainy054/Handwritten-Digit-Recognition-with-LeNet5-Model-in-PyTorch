@@ -31,6 +31,7 @@
         <div class="text-center mb-4">
             <label>Choose an option:</label>
             <select id="option-select">
+                <option value="">Select an Option</option>
                 <option value="upload">Upload an Image</option>
                 <option value="draw">Draw a Digit</option>
             </select>
@@ -65,6 +66,7 @@
         <div class="text-center mb-4">
             <label>Choose Model:</label>
             <select id="model-select">
+                <option value="">Select a Model</option>
                 <option value="mlp">MLP Model</option>
                 <option value="lenet">LeNet-5 Model</option>
                 <option value="cnn">CNN Model</option>
@@ -88,19 +90,34 @@
                 if (option === 'upload') {
                     $('#upload-section').show();
                     $('#draw-section').hide();
+                    $('.prediction').hide(); // Hide all predictions when switching options
                 } else if (option === 'draw') {
                     $('#upload-section').hide();
                     $('#draw-section').show();
+                    $('.prediction').hide(); // Hide all predictions when switching options
+                } else {
+                    // Hide all sections when no option is selected
+                    $('#upload-section').hide();
+                    $('#draw-section').hide();
+                    $('.prediction').hide();
                 }
             });
 
-            // Handle model selection to show only MLP prediction
+            // Handle model selection to show selected model prediction
             $('#model-select').on('change', function () {
                 var model = $(this).val();
                 if (model === 'mlp') {
                     $('#mlp_prediction_text').show();
                     $('#lenet_prediction_text').hide();
                     $('#cnn_prediction_text').hide();
+                } else if (model === 'lenet') {
+                    $('#mlp_prediction_text').hide();
+                    $('#lenet_prediction_text').show();
+                    $('#cnn_prediction_text').hide();
+                } else if (model === 'cnn') {
+                    $('#mlp_prediction_text').hide();
+                    $('#lenet_prediction_text').hide();
+                    $('#cnn_prediction_text').show();
                 } else {
                     // Hide all predictions if no model is selected
                     $('#mlp_prediction_text').hide();
@@ -192,10 +209,8 @@
             ctx.fillStyle = 'black';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Set the initial option to 'upload'
-            $('#option-select').val('upload');
-            $('#upload-section').show();
-            $('#draw-section').hide();
+            // Set the initial option to 'Select an Option'
+            $('#option-select').val('');
 
             // Trigger initial model selection change to hide predictions
             $('#model-select').trigger('change');
@@ -205,6 +220,4 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-        
-
             
