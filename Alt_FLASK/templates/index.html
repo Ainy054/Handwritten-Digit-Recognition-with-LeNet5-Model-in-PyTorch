@@ -61,8 +61,13 @@
             </div>
         </div>
 
+        <!-- Button to scroll to predictions -->
+        <div class="text-center mb-4">
+            <button id="scroll-down" class="btn btn-success">See Predictions</button>
+        </div>
+
         <!-- Predictions section -->
-        <div class="prediction text-center">
+        <div id="predictions" class="prediction text-center">
             <p>MLP Model Prediction: <span id="mlp_prediction"></span></p>
             <p>LeNet-5 Model Prediction: <span id="lenet_prediction"></span></p>
             <p>CNN Model Prediction: <span id="cnn_prediction"></span></p>
@@ -107,6 +112,7 @@
                         $('#mlp_prediction').text(response.mlp_prediction);
                         $('#lenet_prediction').text(response.lenet_prediction);
                         $('#cnn_prediction').text(response.cnn_prediction);
+                        $('#scroll-down').show();
                     }
                 });
             });
@@ -123,7 +129,7 @@
                 ctx.beginPath();
             }).mousemove(function (event) {
                 if (drawing) {
-                    var rect =canvas.getBoundingClientRect();
+                    var rect = canvas.getBoundingClientRect();
                     var x = event.clientX - rect.left;
                     var y = event.clientY - rect.top;
                     ctx.lineWidth = 10;
@@ -156,6 +162,7 @@
                         $('#mlp_prediction').text(response.mlp_prediction);
                         $('#lenet_prediction').text(response.lenet_prediction);
                         $('#cnn_prediction').text(response.cnn_prediction);
+                        $('#scroll-down').show();
                     }
                 });
             });
@@ -168,6 +175,13 @@
             $('#option-select').val('upload');
             $('#upload-section').show();
             $('#draw-section').hide();
+
+            // Scroll down to predictions section
+            $('#scroll-down').click(function () {
+                $('html, body').animate({
+                    scrollTop: $("#predictions").offset().top
+                }, 1000);
+            });
         });
     </script>
     <!-- Include Bootstrap JS and Popper.js -->
